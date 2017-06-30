@@ -7,6 +7,7 @@ import curses
 import curses.panel
 import configparser
 import importlib
+import os
 
 class Interface:
     def __init__(self, y, x, w, h, title_color, regular_text_color, title=''):
@@ -292,12 +293,12 @@ def keyboard_shortcuts(scr_id):
 
     i = plugin_sd.Inventory()
     found_nodes = match_nodes(i.nodes_list, '')
-    keywords = EditBar(5, int(size_x / 2) - 27, 50, 3, curses.color_pair(1),
+    keywords = EditBar(5, int(size_x / 2) - 27, 60, 3, curses.color_pair(1),
                        curses.color_pair(1), ' Keywords ', '', False)
-    filtred_hosts = MenuList(8, int(size_x / 2) - 27, 50, 35, curses.color_pair(1),
+    filtred_hosts = MenuList(8, int(size_x / 2) - 27, 60, 35, curses.color_pair(1),
                              curses.color_pair(1), [n['host'] for n in found_nodes], ' Nodes list ')
-    bOK = Button(43, int(size_x / 2) - 27, 25, 3, curses.color_pair(1), curses.color_pair(1), 'OK', 1)
-    bCancel = Button(43, int((size_x / 2) - 27 + 25), 25, 3, curses.color_pair(1),
+    bOK = Button(43, int(size_x / 2) - 27, 30, 3, curses.color_pair(1), curses.color_pair(1), 'OK', 1)
+    bCancel = Button(43, int((size_x / 2) - 27 + 30), 30, 3, curses.color_pair(1),
                         curses.color_pair(1), 'Cancel', 0)
     keywords.master = True
     filtred_hosts.local_func = hosts_to_display
@@ -312,10 +313,14 @@ if __name__ == "__main__":
     ready_list = []
     plugin_sd = None
     config = configparser.ConfigParser()
-    consumed_files = config.read('mt.conf')
+    consumed_files = config.read('/%s/mt.conf' % '/'.join(os.path.realpath(__file__).split('/')[1:-1]))
     if consumed_files:
-        plugin_sd = importlib.import_module('plugins.%s.%s' % (config['DEFAULT']['plugin'],
-                                                               config['DEFAULT']['plugin']))
+        try:
+            plugin_sd = importlib.import_module('plugins.%s.%s' % (config['DEFAULT']['plugin'],
+                                                                   config['DEFAULT']['plugin']))
+        except ImportError as err:
+           print("Plugin is missing.\nERROR: %s" % err)
+           sys.exit(1)
         if plugin_sd:
             main_scr = init_curses()
             try:
@@ -332,4 +337,3 @@ if __name__ == "__main__":
     else:
         print('ERROR: main config mt.conf file is missing.')
     sys.exit(0)
-

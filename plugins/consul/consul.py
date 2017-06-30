@@ -1,9 +1,11 @@
+import sys
 try:
     import consul
 except ImportError as e:
     print('Required module is missing. Use "pip3 install python-consul" to resolve the problem.')
+    sys.exit(1)
 import configparser
-
+import os
 
 class PluginConfigNotFound(Exception):
     pass
@@ -13,13 +15,14 @@ class Inventory:
     def __init__(self):
         self.nodes_list = []
         self.consul_api = self.get_consul_api()
+
         if self.consul_api:
             self.load_data_for_datacenter()
 
     @staticmethod
     def get_consul_api():
         config = configparser.ConfigParser()
-        consumed_files = config.read('plugins/consul/consul.conf')
+        consumed_files = config.read('/%s/consul.conf'% '/'.join(os.path.realpath(__file__).split('/')[1:-1]))
         if not consumed_files:
             raise PluginConfigNotFound('Config file for consul plugin is missing.')
         host = config['DEFAULT']['host']
