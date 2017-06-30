@@ -1,4 +1,7 @@
-import consul
+try:
+    import consul
+except ImportError as e:
+    print('Required module is missing. Use "pip3 install python-consul" to resolve the problem.')
 import configparser
 
 

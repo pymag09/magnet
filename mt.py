@@ -6,7 +6,7 @@ import sys
 import curses
 import curses.panel
 import configparser
-
+import importlib
 
 class Interface:
     def __init__(self, y, x, w, h, title_color, regular_text_color, title=''):
@@ -314,8 +314,8 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     consumed_files = config.read('mt.conf')
     if consumed_files:
-        if config['DEFAULT']['plugin'] == 'consul':
-            import plugins.consul.consul as plugin_sd
+        plugin_sd = importlib.import_module('plugins.%s.%s' % (config['DEFAULT']['plugin'],
+                                                               config['DEFAULT']['plugin']))
         if plugin_sd:
             main_scr = init_curses()
             try:
@@ -326,7 +326,7 @@ if __name__ == "__main__":
             finally:
                 shutdown_curses(main_scr)
             for ssh in ready_list:
-                subprocess.Popen(shlex.split('%s%s' % (config['DEFAULT']['cmd'], ssh)))
+                subprocess.Popen(shlex.split('%s %s' % (config['DEFAULT']['cmd'], ssh)))
         else:
             print('No such plugin.')
     else:
