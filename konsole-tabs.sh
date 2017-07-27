@@ -7,7 +7,7 @@
 
 NewWindow=0
 kses=$(qdbus | grep konsole | head -n 1)
-if [[ "$kses" -eq "" ]]; then
+if [[ "$kses" == "" ]]; then
   NewWindow=1
   /usr/bin/konsole
   kses=$(qdbus | grep konsole | head -n 1)
@@ -26,6 +26,7 @@ do
     else
       session=$(qdbus $kses /Konsole currentSession)
     fi
+    echo $session
     echo $session >>/tmp/kses
     qdbus $kses /Sessions/${session} >>/tmp/kses
     qdbus $kses /Sessions/${session} sendText "ssh user@${i}
