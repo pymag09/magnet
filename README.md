@@ -7,4 +7,8 @@ Magnet supports plugins. If you use custom service discovery system you can writ
 `console.sh` - script which opens console of your preference (edit `console.sh` before first run)  
 `mt.conf` - defines what plugin to use and path to `console.sh`  
   
+## Dependencies  
+python-qt4 - for GUI  
+xdotool - for managing tabs in your terminal  
+  
 ![demo](images/magnet-demo.gif)
