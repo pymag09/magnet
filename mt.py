@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # -*- coding: utf-8 -*-
-
+import time
 import sys
 import math
 import os
@@ -36,8 +36,10 @@ class Ui_Dialog(object):
             self.tableWidget.setItem(index, 0, QtGui.QTableWidgetItem(iitem['host']))
 
     def ok_action(self):
+        ready_list = []
         for ssh in range(self.tableWidget.rowCount()):
-            subprocess.Popen(shlex.split('%s %s' % (config['DEFAULT']['cmd'], self.tableWidget.item(ssh, 0).text())))
+          ready_list.append(self.tableWidget.item(ssh, 0).text())
+        subprocess.Popen(shlex.split('%s %s' % (config['DEFAULT']['cmd'], ' '.join(ready_list))))
         Dialog.accept()
 
     def load_hosts(self):
@@ -136,7 +138,6 @@ class Ui_Dialog(object):
 
 
 if __name__ == "__main__":
-    ready_list = []
     plugin_sd = None
     config = configparser.ConfigParser()
     consumed_files = config.read('/%s/mt.conf' % '/'.join(os.path.realpath(__file__).split('/')[1:-1]))
@@ -157,8 +158,6 @@ if __name__ == "__main__":
                 sys.exit(app.exec_())
             except plugin_sd.PluginConfigNotFound as pcm:
                 print('ERROR: %s' % pcm.args)
-            for ssh in ready_list:
-                subprocess.Popen(shlex.split('%s %s' % (config['DEFAULT']['cmd'], ssh)))
         else:
             print('No such plugin.')
     else:

@@ -39,15 +39,17 @@ check_if_console_is_running() {
 
 ssh2host() {
 	for i in $hosts; do
-		CONSOLEID=$(xdotool search --class "$(basename $console_tool)" | sort -r | head -1)
-		xdotool windowfocus $CONSOLEID
-		xdotool key "$hot_key"
-		xdotool type "$run_this $i
-		"
+		xdotool search --onlyvisible --class $(basename $console_tool) key "$hot_key"
+		xdotool search --onlyvisible --class $(basename $console_tool) type "$run_this $i
+"
 	done
 }
 
 #----------------
 check_main_dependancies
 check_if_console_is_running
+xdotool search --onlyvisible --class $(basename $console_tool) windowactivate
+xdotool search --onlyvisible --class $(basename $console_tool) windowfocus
+setxkbmap us
+xdotool search --onlyvisible --class $(basename $console_tool) windowactivate
 ssh2host
