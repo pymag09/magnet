@@ -24,27 +24,16 @@ layout_list="us,ru,ua"
 #
 #
 ##############################################################################
-termID=xdotool search --onlyvisible --class $(basename $console_tool)
 hosts=$*
 
 kde_native_konsole() {
-	NewWindow=0
-	kses=$(qdbus | grep konsole | head -n 1)
-	if [[ $kses == "" ]]; then
-	  NewWindow=1
-	  eval $console_tool
-	  kses=$(qdbus | grep konsole | head -n 1)
-	fi
+	sessionID=$(qdbus | grep konsole | head -n 1)
 	for i in $hosts
 	do
-	    if [[ $NewWindow == 0 ]]; then
-	      session=$(qdbus $kses /Windows/1 newSession)
-	    else
-	      session=$(qdbus $kses /Windows/1 currentSession)
-	    fi
-	    qdbus $kses /Sessions/${session} sendText "${run_this} ${i}
+	    session=$(qdbus $sessionID /Windows/1 newSession)
+	    qdbus $sessionID /Sessions/${session} sendText "${run_this} ${i}
 	"
-	    qdbus $kses /Sessions/${session} setMonitorSilence true
+	    qdbus $sessionID /Sessions/${session} setMonitorSilence true
 	done
 }
 
@@ -63,24 +52,24 @@ check_if_console_is_running() {
 	if [[ $(pgrep -c -u "$USER" "$(basename $console_tool)") -eq 0 ]]; then
  		eval $console_tool
 	fi
+	sleep 1
 }
 
 ssh2host() {
 	for i in $hosts; do
-		xdotool key $termID "$hot_key"
-		xdotool type $termID "${run_this} $i
+		xdotool key --clearmodifiers "${hot_key}"
+		xdotool type --clearmodifiers "${run_this} ${i}
 "
 	done
 }
-
-xdotool windowactivate $termID
-xdotool windowfocus $termID
-xdotool windowactivate $termID
+check_main_dependancies
+check_if_console_is_running
+winID=$(xdotool search --onlyvisible --class $(basename $console_tool) | head -n 1)
+xdotool windowactivate $winID
+xdotool windowfocus $winID
 if [[ $(basename $console_tool) == "konsole" ]]; then
 	kde_native_konsole
 else
-	check_main_dependancies
-    check_if_console_is_running
 	setxkbmap us
 	ssh2host
 	setxkbmap $layout_list
