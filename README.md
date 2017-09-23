@@ -24,9 +24,10 @@ Magnet supports plugins. If you use custom service discovery system you can writ
     * run_this - `ssh -l user `or your ssh wrapper(in case you use jump host).
     * layout_list - US layout is used when we need to type and execute some command. If you have more than one layout in the end of execution we need to revert layouts you use.
 * place all (mt.conf, consul.conf, static_inventory.yaml and other config for possible plugins) config files to $HOME/.mt/ folder
-* edit mt.conf. There are only two parameters.
+* edit mt.conf. Default path is ~/.mt/. There are only two parameters.
     * plugin
     * cmd - path to console.sh script
+* edit plugin config file. Default path is ~/.mt/
 
 OPTIONAL STEP
 * create hot key for mt.py. For example I use Ctrl+Alt+m.
