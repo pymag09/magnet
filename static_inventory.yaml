@@ -1,0 +1,22 @@
+---
+#
+# Aliases.
+# Format: alias: word
+# Multiple aliases for one keyword are possible
+#
+# mars and jupiter are aliases for earth. It means that during searching mars will be substituted with earth
+#
+aliases:
+  mars: earth
+  jupiter: earth
+
+#
+# Static inventory
+# Format: hosts: [words, words, words ...]
+#
+# host 192.168.1.1 associated with earth and planet keywords
+#
+hosts:
+  192.168.1.1:
+    - earth
+    - planet

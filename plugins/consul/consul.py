@@ -1,11 +1,11 @@
 import sys
+from pathlib import Path
 try:
     import consul
 except ImportError as e:
     print('Required module is missing. Use "pip3 install python-consul" to resolve the problem.')
     sys.exit(1)
 import configparser
-import os
 
 class PluginConfigNotFound(Exception):
     pass
@@ -22,7 +22,7 @@ class Inventory:
     @staticmethod
     def get_consul_api():
         config = configparser.ConfigParser()
-        consumed_files = config.read('/%s/consul.conf'% '/'.join(os.path.realpath(__file__).split('/')[1:-1]))
+        consumed_files = config.read('%s/.mt/consul.conf' % str(Path.home()))
         if not consumed_files:
             raise PluginConfigNotFound('Config file for consul plugin is missing.')
         host = config['DEFAULT']['host']
@@ -48,3 +48,9 @@ class Inventory:
                                         'words': '%s %s %s' % (groups.get('Value') if groups else '',
                                                                tags,
                                                                node['Address'])})
+
+    def match_nodes(self, filter_string):
+        tmp_nodes = self.nodes_list
+        for word in filter_string.split(' '):
+            tmp_nodes = list(filter(lambda hs: word in hs['words'], tmp_nodes))
+        return tmp_nodes

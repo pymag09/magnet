@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 
 # -*- coding: utf-8 -*-
-import time
+import yaml
 import sys
-import math
-import os
+from pathlib import Path
 import importlib
 import configparser
 import subprocess
@@ -27,8 +26,16 @@ except AttributeError:
 
 class Ui_Dialog(object):
 
+    def load_static_inventory(self, i):
+        yaml_obj = yaml.load(open('%s/.mt/static_inventory.yaml' % str(Path.home())))
+        self.aliases = yaml_obj['aliases']
+        for k, v in yaml_obj['hosts'].items():
+            i.append({'host': k, 'words': ' '.join(v)})
+
     def action_match_nodes(self):
-        result = self.i.match_nodes(self.lineEdit.text())
+        result = self.i.match_nodes(self.aliases.get(self.lineEdit.text())
+                                    if self.aliases.get(self.lineEdit.text())
+                                    else self.lineEdit.text())
         self.tableWidget.clear()
         self.tableWidget.setRowCount(len(result))
         self.tableWidget.setHorizontalHeaderLabels(["Hosts"])
@@ -49,6 +56,7 @@ class Ui_Dialog(object):
         font.setWeight(100)
         self.label.setFont(font)
         ui.i = plugin_sd.Inventory()
+        self.load_static_inventory(self.i.nodes_list)
         self.tableWidget.setRowCount(len(self.i.nodes_list))
         for index, iitem in enumerate(self.i.nodes_list):
             self.tableWidget.setItem(index, 0, QtGui.QTableWidgetItem(iitem['host']))
@@ -137,7 +145,7 @@ class Ui_Dialog(object):
 if __name__ == "__main__":
     plugin_sd = None
     config = configparser.ConfigParser()
-    consumed_files = config.read('/%s/mt.conf' % '/'.join(os.path.realpath(__file__).split('/')[1:-1]))
+    consumed_files = config.read('%s/.mt/mt.conf' % str(Path.home()))
     if consumed_files:
         try:
             plugin_sd = importlib.import_module('plugins.%s.%s' % (config['DEFAULT']['plugin'],
@@ -155,9 +163,8 @@ if __name__ == "__main__":
                 sys.exit(app.exec_())
             except plugin_sd.PluginConfigNotFound as pcm:
                 print('ERROR: %s' % pcm.args)
+                sys.exit(app.exec_())
         else:
             print('No such plugin.')
     else:
         print('ERROR: main config mt.conf file is missing.')
-    sys.exit(app.exec_())
-

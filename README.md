@@ -23,6 +23,7 @@ Magnet supports plugins. If you use custom service discovery system you can writ
     * hot_key - `xdotool` emulates keys press. It's hot for new tab. Default key combinations for konosle and gnome-terminal is Ctrl+Shift+t
     * run_this - `ssh -l user `or your ssh wrapper(in case you use jump host).
     * layout_list - US layout is used when we need to type and execute some command. If you have more than one layout in the end of execution we need to revert layouts you use.
+* place all (mt.conf, consul.conf, static_inventory.yaml and other config for possible plugins) config files to $HOME/.mt/ folder
 * edit mt.conf. There are only two parameters.
     * plugin
     * cmd - path to console.sh script
@@ -30,6 +31,24 @@ Magnet supports plugins. If you use custom service discovery system you can writ
 OPTIONAL STEP
 * create hot key for mt.py. For example I use Ctrl+Alt+m.
 
+## STATIC INVENTORY
+In case you don't have everything in service discovery but want magnet to add these hosts to shared DB you can do this by adding recodrs to static_inventory.yaml, section `hosts`. Format is simple:
+```
+"ip or DNS name":
+  - any name
+  - keyword1
+  - keyword2
+```
+
+## ALIASES
+Another cool feature - aliases. Imagin in service discovery you have registred service - "cool.app". But in your team, everybody call this app - `fatboy`. fatboy is unofficial name and for convinience you can assigne local alias.
+Format:
+```
+aliases:
+  fatboy: cool.app
+  spaceship: cool.app
+  ....
+```
 ## Terminal window
 I tried different approaches, because the idea was to write single script for every possible terminal, but I end up with separate function for KDE konsole and everything else. `xdotool` has couple of downsides. All of them are related to keyboard layout. Needless to say `konsole` has perfect dbus support. Apparently this is the best choice for `konsole`. Hope this is finnaly version of `console.sh`
 
