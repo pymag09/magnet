@@ -15,6 +15,7 @@ Magnet supports plugins. If you use custom service discovery system you can writ
 ## Dependencies  
 `python-qt4` - for GUI  
 `xdotool` - for managing tabs in your terminal  
+`pyyaml`  
 
 ## INSTALATION
 * git clone https://github.com/pymag09/magnet.git

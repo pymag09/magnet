@@ -27,9 +27,8 @@ except AttributeError:
 class Ui_Dialog(object):
 
     def load_static_inventory(self, i):
-        yaml_obj = yaml.load(open('%s/.mt/static_inventory.yaml' % str(environ['HOME'])))
-        self.aliases = yaml_obj['aliases']
-        for k, v in yaml_obj['hosts'].items():
+        self.aliases = self.yaml_obj['aliases']
+        for k, v in self.yaml_obj['hosts'].items():
             i.append({'host': k, 'words': ' '.join(v)})
 
     def action_match_nodes(self):
@@ -155,15 +154,20 @@ if __name__ == "__main__":
             sys.exit(1)
         if plugin_sd:
             try:
+                yobj = yaml.load(open('%s/.mt/static_inventory.yaml' % str(environ['HOME'])))
                 app = QtGui.QApplication(sys.argv)
                 Dialog = QtGui.QDialog()
                 ui = Ui_Dialog()
+                ui.yaml_obj = yobj
                 ui.setupUi(Dialog)
                 Dialog.show()
                 sys.exit(app.exec_())
             except plugin_sd.PluginConfigNotFound as pcm:
                 print('ERROR: %s' % pcm.args)
                 sys.exit(app.exec_())
+            except yaml.YAMLError or yaml.scanner.ScannerError:
+                print("ERROR: sytax error in %s/.mt/static_inventory.yaml" % str(environ['HOME']))
+                sys.exit(1)
         else:
             print('No such plugin.')
     else:
