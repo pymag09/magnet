@@ -1,5 +1,6 @@
 import sys
-from pathlib import Path
+from os import environ
+
 try:
     import consul
 except ImportError as e:
@@ -22,7 +23,7 @@ class Inventory:
     @staticmethod
     def get_consul_api():
         config = configparser.ConfigParser()
-        consumed_files = config.read('%s/.mt/consul.conf' % str(Path.home()))
+        consumed_files = config.read('%s/.mt/consul.conf' % str(environ['HOME']))
         if not consumed_files:
             raise PluginConfigNotFound('Config file for consul plugin is missing.')
         host = config['DEFAULT']['host']

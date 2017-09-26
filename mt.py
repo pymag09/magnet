@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 import yaml
 import sys
-from pathlib import Path
+from os import environ
 import importlib
 import configparser
 import subprocess
@@ -27,7 +27,7 @@ except AttributeError:
 class Ui_Dialog(object):
 
     def load_static_inventory(self, i):
-        yaml_obj = yaml.load(open('%s/.mt/static_inventory.yaml' % str(Path.home())))
+        yaml_obj = yaml.load(open('%s/.mt/static_inventory.yaml' % str(environ['HOME'])))
         self.aliases = yaml_obj['aliases']
         for k, v in yaml_obj['hosts'].items():
             i.append({'host': k, 'words': ' '.join(v)})
@@ -145,7 +145,7 @@ class Ui_Dialog(object):
 if __name__ == "__main__":
     plugin_sd = None
     config = configparser.ConfigParser()
-    consumed_files = config.read('%s/.mt/mt.conf' % str(Path.home()))
+    consumed_files = config.read('%s/.mt/mt.conf' % str(environ['HOME']))
     if consumed_files:
         try:
             plugin_sd = importlib.import_module('plugins.%s.%s' % (config['DEFAULT']['plugin'],
