@@ -23,7 +23,7 @@ class Inventory:
     @staticmethod
     def get_consul_api():
         config = configparser.ConfigParser()
-        consumed_files = config.read('%s/.mt/consul.conf' % str(environ['HOME']))
+        consumed_files = config.read('%s/.magnet/consul.conf' % str(environ['HOME']))
         if not consumed_files:
             raise PluginConfigNotFound('Config file for consul plugin is missing.')
         host = config['DEFAULT']['host']
