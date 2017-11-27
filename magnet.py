@@ -5,6 +5,7 @@ import yaml
 import sys
 from os import environ
 import importlib.util
+from importlib.machinery import SourceFileLoader
 import configparser
 import subprocess
 import shlex
@@ -149,9 +150,7 @@ def main():
             absolute_plugin_path = '%s/.magnet/plugins/%s/%s.py' % (environ['HOME'],
                                                                 config['DEFAULT']['plugin'],
                                                                 config['DEFAULT']['plugin'])
-            spec = importlib.util.spec_from_file_location(config['DEFAULT']['plugin'], absolute_plugin_path)
-            plugin_sd = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(plugin_sd)
+            plugin_sd = SourceFileLoader(config['DEFAULT']['plugin'], absolute_plugin_path).load_module()
         except (ImportError, FileNotFoundError) as err:
             print("Plugin is missing.\nERROR: %s" % err)
             sys.exit(1)
