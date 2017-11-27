@@ -22,7 +22,7 @@ These packages will be installed by `setup.py`:
 
 ## INSTALATION
 * git clone https://github.com/pymag09/magnet.git
-* python3 setup.py install
+* sudo python3 setup.py install
 * edit console.sh. There are number of settings at the very top of file.
     * console_tool - terminal of your preference
     * hot_key - `xdotool` emulates keys press. It's shortcut for new tab. Default key combinations for konosle and gnome-terminal is Ctrl+Shift+t
