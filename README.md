@@ -14,7 +14,7 @@ Magnet supports plugins. If you use custom service discovery system you can writ
 * `magnet.conf` - defines what plugin to use and path to `console.sh`
 
 ## Dependencies  
-`python-pip3` - must be install before `python3 setup.py install`  
+`python-pip3` - must be installed before executing `python3 setup.py install`  
 These packages will be installed by `setup.py`:
 * `python-qt4` - for GUI  
 * `xdotool` - for managing tabs in your terminal  
